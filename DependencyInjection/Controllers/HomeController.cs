@@ -1,4 +1,6 @@
 ﻿using DependencyInjection.Models;
+using DependencyInjection.Models.ViewModels;
+using DependencyInjection.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,7 +15,31 @@ namespace DependencyInjection.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            HomeViewModel vm = new HomeViewModel();
+            MarketForecaster marketForecaster = new MarketForecaster();
+            MarketResult marketResult = marketForecaster.GetMarketPrediction();
+
+            switch (marketResult.MarketCondition)
+            {
+                case MarketCondition.StableUp:
+                    vm.MarketForeCast = "The market is showing steady upward growth. " +
+                        "Consider holding or gradually increasing your positions.";
+                    break;
+                case MarketCondition.StableDown:
+                    vm.MarketForeCast = "The market is experiencing a slight decline. " +
+                        "It may be wise to hold or monitor for further changes.";
+                    break;
+                case MarketCondition.Volatile:
+                    vm.MarketForeCast = "The market is highly volatile. " +
+                        "Exercise caution and avoid making impulsive decisions.";
+                    break;
+                default:
+                    vm.MarketForeCast = "Market conditions are uncertain. " +
+                        "Stay informed and proceed with careful planning.";
+                    break;
+            }
+
+            return View(vm);
         }
 
         public IActionResult Privacy()
