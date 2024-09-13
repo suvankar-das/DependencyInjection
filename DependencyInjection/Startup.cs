@@ -1,4 +1,5 @@
 using DependencyInjection.Data;
+using DependencyInjection.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -36,6 +37,14 @@ namespace DependencyInjection
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             // AddRazorRuntimeCompilation() automatically refresh pages
             // install nuget => search "runtimecomp" and install 
+
+
+            // Register the service to IOC container
+            services.AddTransient<IMarketForecaster, MarketForecaster>();
+
+
+
+
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
         }
 
