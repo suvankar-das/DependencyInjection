@@ -1,6 +1,6 @@
 ﻿namespace DependencyInjection.Service
 {
-    public class MarketForecaster
+    public class MarketForecaster : IMarketForecaster
     {
         public MarketResult GetMarketPrediction()
         {

@@ -13,11 +13,15 @@ namespace DependencyInjection.Controllers
 {
     public class HomeController : Controller
     {
+        HomeViewModel vm = new HomeViewModel();
+        private readonly IMarketForecaster _marketForeCaster;
+        public HomeController(IMarketForecaster marketForeCaster)
+        {
+            _marketForeCaster = marketForeCaster;
+        }
         public IActionResult Index()
         {
-            HomeViewModel vm = new HomeViewModel();
-            MarketForecaster marketForecaster = new MarketForecaster();
-            MarketResult marketResult = marketForecaster.GetMarketPrediction();
+            MarketResult marketResult = _marketForeCaster.GetMarketPrediction();
 
             switch (marketResult.MarketCondition)
             {
