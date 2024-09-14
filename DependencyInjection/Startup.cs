@@ -1,5 +1,6 @@
 using DependencyInjection.Data;
 using DependencyInjection.Service;
+using DependencyInjection.Utility.AppSettingsClasses;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -42,6 +43,11 @@ namespace DependencyInjection
             // Register the service to IOC container
             services.AddTransient<IMarketForecaster, MarketForecaster>();
 
+            //GetSection() required a key and The key would be the exact same name that we have in appsettings.json.
+            services.Configure<WazeForecast>(Configuration.GetSection("WazeForecast"));
+            services.Configure<Stripe>(Configuration.GetSection("Stripe"));
+            services.Configure<Twilio>(Configuration.GetSection("Twilio"));
+            services.Configure<SendGrid>(Configuration.GetSection("SendGrid"));
 
 
 

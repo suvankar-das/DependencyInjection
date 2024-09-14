@@ -1,8 +1,10 @@
 ﻿using DependencyInjection.Models;
 using DependencyInjection.Models.ViewModels;
 using DependencyInjection.Service;
+using DependencyInjection.Utility.AppSettingsClasses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,9 +17,28 @@ namespace DependencyInjection.Controllers
     {
         HomeViewModel vm = new HomeViewModel();
         private readonly IMarketForecaster _marketForeCaster;
-        public HomeController(IMarketForecaster marketForeCaster)
+
+        // configs
+        private readonly Stripe _stripeSettings;
+        private readonly WazeForecast _wazeForecastSettings;
+        private readonly Twilio _twilioSettings;
+        private readonly SendGrid _sendGridSettings;
+
+        public HomeController(IMarketForecaster marketForeCaster,
+            IOptions<Stripe> stripeSettings,
+            IOptions<WazeForecast> wazeForecastSettings,
+            IOptions<Twilio> twilioSettings,
+            IOptions<SendGrid> sendGridSettings
+            )
         {
             _marketForeCaster = marketForeCaster;
+
+            // set configuration value
+            _stripeSettings = stripeSettings.Value;
+            _wazeForecastSettings = wazeForecastSettings.Value;
+            _twilioSettings = twilioSettings.Value;
+            _sendGridSettings = sendGridSettings.Value;
+
         }
         public IActionResult Index()
         {
@@ -46,6 +67,24 @@ namespace DependencyInjection.Controllers
             return View(vm);
         }
 
+
+        public IActionResult AllConfigs()
+        {
+            List<String> allConfigs = new List<String>();
+            allConfigs.Add(_wazeForecastSettings.ForecastTrackerEnablecr.ToString());
+            
+            allConfigs.Add(_stripeSettings.PublishableKey);
+            allConfigs.Add(_stripeSettings.SecretKey);
+            
+            allConfigs.Add(_twilioSettings.PhoneNumber);
+            allConfigs.Add(_twilioSettings.AccountSid);
+
+            allConfigs.Add(_sendGridSettings.SendGridKey);
+
+
+
+            return View(allConfigs);
+        }
         public IActionResult Privacy()
         {
             return View();
