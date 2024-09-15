@@ -19,25 +19,14 @@ namespace DependencyInjection.Controllers
         private readonly IMarketForecaster _marketForeCaster;
 
         // configs
-        private readonly Stripe _stripeSettings;
         private readonly WazeForecast _wazeForecastSettings;
-        private readonly Twilio _twilioSettings;
-        private readonly SendGrid _sendGridSettings;
 
-        public HomeController(IMarketForecaster marketForeCaster,
-            IOptions<Stripe> stripeSettings,
-            IOptions<WazeForecast> wazeForecastSettings,
-            IOptions<Twilio> twilioSettings,
-            IOptions<SendGrid> sendGridSettings
-            )
+        public HomeController(IMarketForecaster marketForeCaster,IOptions<WazeForecast> wazeForecastSettings)
         {
             _marketForeCaster = marketForeCaster;
 
             // set configuration value
-            _stripeSettings = stripeSettings.Value;
             _wazeForecastSettings = wazeForecastSettings.Value;
-            _twilioSettings = twilioSettings.Value;
-            _sendGridSettings = sendGridSettings.Value;
 
         }
         public IActionResult Index()
@@ -68,18 +57,21 @@ namespace DependencyInjection.Controllers
         }
 
 
-        public IActionResult AllConfigs()
+        public IActionResult AllConfigs([FromServices] IOptions<Stripe> stripeSettings,
+            [FromServices] IOptions<Twilio> twilioSettings,
+            [FromServices] IOptions<SendGrid> sendGridSettings
+            )
         {
             List<String> allConfigs = new List<String>();
             allConfigs.Add(_wazeForecastSettings.ForecastTrackerEnablecr.ToString());
-            
-            allConfigs.Add(_stripeSettings.PublishableKey);
-            allConfigs.Add(_stripeSettings.SecretKey);
-            
-            allConfigs.Add(_twilioSettings.PhoneNumber);
-            allConfigs.Add(_twilioSettings.AccountSid);
 
-            allConfigs.Add(_sendGridSettings.SendGridKey);
+            allConfigs.Add(stripeSettings.Value.PublishableKey);
+            allConfigs.Add(stripeSettings.Value.SecretKey);
+
+            allConfigs.Add(twilioSettings.Value.PhoneNumber);
+            allConfigs.Add(twilioSettings.Value.AccountSid);
+
+            allConfigs.Add(sendGridSettings.Value.SendGridKey);
 
 
 
