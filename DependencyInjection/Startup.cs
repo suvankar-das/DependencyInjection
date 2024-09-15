@@ -1,5 +1,7 @@
 using DependencyInjection.Data;
+using DependencyInjection.Middlewares;
 using DependencyInjection.Service;
+using DependencyInjection.Service.LifeTimeExercise;
 using DependencyInjection.Utility.AppSettingsClasses;
 using DependencyInjection.Utility.DIAppConfiguration;
 using Microsoft.AspNetCore.Builder;
@@ -44,6 +46,10 @@ namespace DependencyInjection
             // Register the service to IOC container
             services.AddTransient<IMarketForecaster, MarketForecaster>();
 
+            services.AddTransient<TransientService>();
+            services.AddSingleton<SingletonService>();
+            services.AddScoped<ScopedService>();
+
             
             DI_AppConfigurationSettings.AddAppSettingsConfig(services, Configuration);
 
@@ -73,6 +79,8 @@ namespace DependencyInjection
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<CustomMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
